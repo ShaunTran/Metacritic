@@ -176,7 +176,7 @@
                         </th>    
                         ";
                 }
-                $connect = mysqli_connect('localhost', 'root', 'Tran5600!', 'database');
+                $connect = mysqli_connect('localhost', 'root', 'password', 'database');
                 if (!$connect) {
                     die("Connection Error");
                 }
