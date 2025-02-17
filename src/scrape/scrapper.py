@@ -7,6 +7,7 @@ base_url = "https://www.metacritic.com"
 main_url = "https://www.metacritic.com/browse/game/?releaseYearMin=1958&releaseYearMax=2024&page="
 pages = 557
 
+#Writes the information into a csv file
 def writeToCSV(data):
     file_exists = os.path.isfile('csv/newinfo.csv')
     with open('csv/newinfo.csv', 'a') as file:
@@ -25,6 +26,7 @@ def main():
     for i in range(1, pages+1):
         url = main_url + str(i)
         try:
+            #Point of this part is to scroll down the webpage in order for the webpage to load in in order to grab all the information
             driver.get(url)
             time.sleep(2)
             driver.execute_script("window.scrollBy(0,500)")
@@ -39,6 +41,7 @@ def main():
         assert table, "table not found"
         count = 0
         
+        #Retrieves the key information to put in a list
         for item in table.find_all("div", class_="c-finderProductCard"):
             name = item.find("h3", class_="c-finderProductCard_titleHeading")
             link = item.find('a', href=True)

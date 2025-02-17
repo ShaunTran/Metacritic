@@ -32,6 +32,7 @@ def main():
     images = tables['img']
     data = []
 
+    #Sorts the data by the release date of each game
     dates = release_dates.tolist()
     dates = [str(s).replace(',','') for s in dates]
     release_dates = dates[:]

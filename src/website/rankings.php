@@ -112,6 +112,7 @@
         
         <tbody>
             <?php
+                #Correctly provides the correct color depending on the score of the game
                 function colors($score, $length) {
                     $color = [];
                     for ($i = 0; $i < $length; $i++) {
@@ -147,6 +148,7 @@
                 
                     return $color;
                 }
+                #Edge case for the last row if the last row has less than 5 games
                 function special($links, $names, $images, $metascores, $userscores, $averages) {
                     $mcolor = color($metascores);
                     $ucolor = color(preg_replace("/[^a-zA-Z 0-9]+/", "", $userscores ));
@@ -180,6 +182,7 @@
                 if (!$connect) {
                     die("Connection Error");
                 }
+                #Filtering options for type of score to display
                 if ($select == "user") {
                     $order = "user_score DESC, metascore DESC, id ASC";
                 } else if ($select == "avg") {
@@ -187,7 +190,7 @@
                 } else {
                     $order = "metascore DESC, user_score DESC, id ASC";
                 }
-           
+                
                 $query = "SELECT COUNT(*) FROM metacritic WHERE user_total >= $number and RIGHT(release_date, 4) >= $minyear and RIGHT(release_date, 4) <= $maxyear 
                         and name like '%$searchg%' and developer like '%$searchd%'";
                 $result = mysqli_query($connect, $query);
@@ -200,6 +203,7 @@
 
                 $j = 0;
                 $names = $metascores = $userscores = $averages = array();
+                #Parses all the data and puts it in an array for keeping
                 for ($i = 0; $i < 25; $i++) {
                     while ($j < 5) {
                         $row = mysqli_fetch_array($result);
@@ -227,6 +231,7 @@
                         $j++;
                     }
                     
+                    #Edge case for the last row
                     if ($row == null) {
                         for ($i = 0; $i < $count; $i++) {
                                 special(array_shift($links), array_shift($names), array_shift($images), 
@@ -278,6 +283,7 @@
         <div class="pages">
         <center>
             <?php
+            #Parses the query in order to retrieve the parameters we want
             function parse() {
                 $parsed = parse_url($_SERVER['REQUEST_URI']);
                 $query = $parsed['query'];
@@ -295,6 +301,7 @@
             } else {
                 $query = 'scores=meta&count=25&number=0&minyear=1995&maxyear=2024&searchg=&searchd=&';
             }
+            #This part of code is dependent on the query in order to set up the correct number of max pages and pages to display
             $page = 'page=';
             $first_page= $page . '1';
             $last_page = $page . $pages;

@@ -7,6 +7,7 @@ from selenium.common.exceptions import TimeoutException
 data = []
 start = time.time()
 
+#Code used to help speed up the scraping process
 options = ChromeOptions()
 prefs = {"profile.managed_default_content_settings.images": 2, "profile.default_content_setting_values.javascript": 2}
 options.add_experimental_option("prefs", prefs)
@@ -20,6 +21,7 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 options.add_argument(f'user-agent={user_agent}')
 driver = webdriver.Chrome(options=options)
 
+#Scrapes all the information needed from each link
 def info_getter(url):
     info = [None] * 9
     try:
@@ -61,6 +63,7 @@ def info_getter(url):
     
     return info
 
+#Adjusts all the info needed in order to pass into a csv file
 def convertForCSV(name, info, url, img):
     data = []
     info = correct(info)
@@ -82,6 +85,7 @@ def convertForCSV(name, info, url, img):
             })
     return data
 
+#Corrects certain information provided by the scraping
 def correct(info):
     if (info[4] == "Metascore"):
         info[4] = "Unknown"
@@ -95,6 +99,7 @@ def correct(info):
         info[8] = 0
     return info
 
+#Gets the average of the metacritic score and user score
 def getAverage(meta, user):
     meta = float(meta)
     user = float(user)
@@ -105,17 +110,20 @@ def getAverage(meta, user):
     else:
         return (meta + (user * 10)) / 2
 
+#Writes the data to a csv file
 def writeToCSV(data):
     with open('csv/inf5.csv', 'a') as file:
         writer = csv.DictWriter(file, fieldnames=['name', "publisher", "developer", "platform(s)", "genre", "release_date", "metascore", "critic_total", "user_score", "user_total", "average_score", 'link', 'img'])
         writer.writerow(data)
         file.close()
 
+#Some pages on metacritic don't contain all the information in which case it gets sent into an error file
 def errorFile(data):
     f = open("src/scrape/error/error.txt", "a")
     f.write(data + "\n")
     f.close()
 
+#Adjusts the csv file by removing unnecessary newlines
 def fix():
     with open('csv/inf5.csv', newline='') as in_file:
             with open('csv/inf5-1.csv', 'w', newline='') as out_file:
